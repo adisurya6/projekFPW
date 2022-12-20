@@ -17,13 +17,13 @@ use Illuminate\Support\Facades\Hash;
 |
 */
 
-Route::get('/', function () {
+Route::get('/', function (){
     return view('main');
-});
+})->middleware('cekHome');
 
 Route::get('/login', function () {
     return view('login');
-});
+})->middleware('cekHome');
 
 Route::post('/doLogin', function (Request $request) {
     $credential = [
@@ -32,16 +32,29 @@ Route::post('/doLogin', function (Request $request) {
     ];
     if($request->role == 1){
         if(Auth::guard('web')->attempt($credential)){
-            dd(Auth::guard('web')->user());
+            return redirect('/');
         }else{
             echo 'salah';
         }
     }
+})->middleware('cekHome');
+
+Route::get('/doLogout', function(Request $req){
+    if(aldLogin()){
+
+    }
+    if(Auth::guard('web')->check()){
+        Auth::guard('web')->logout();
+    }
+    if(Auth::guard('company')->check()){
+        Auth::guard('company')->logout();
+    }
+    return redirect('/');
 });
 
 Route::get('/register', function(){
     return view('registeruser');
-});
+})->middleware('cekHome');
 
 Route::post('/register/doRegister', function(Request $request){
     $validatedData = $request->validate([
@@ -58,11 +71,11 @@ Route::post('/register/doRegister', function(Request $request){
 
     Users::create($validatedData);
     return redirect('/login')->with('success', 'Registration Succesfull! Please Login');
-});
+})->middleware('cekHome');
 
 Route::get('/registerc', function(){
     return view('registercompany');
-});
+})->middleware('cekHome');
 
 Route::post('/registerc/doRegister', function(Request $request){
     $validatedData = $request->validate([
@@ -76,9 +89,9 @@ Route::post('/registerc/doRegister', function(Request $request){
     $validatedData['password'] = Hash::make($validatedData['password']);
 
     Users::create($validatedData);
-});
+})->middleware('cekHome');
 
-Route::prefix('user')->group( function() {
+Route::prefix('user')->middleware('cekUser')->group( function() {
     Route::get('/', function() {
         return redirect()->route("user-home");
     });
@@ -100,7 +113,7 @@ Route::prefix('user')->group( function() {
     });
 });
 
-Route::prefix('company')->group( function() {
+Route::prefix('company')->middleware('cekCompany')->group( function() {
     Route::get('/', function() {
         return redirect()->route("company-home");
     });

@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class CekUser
+class cekHome
 {
     /**
      * Handle an incoming request.
@@ -17,12 +17,16 @@ class CekUser
      */
     public function handle(Request $request, Closure $next)
     {
-        if(aldLogin() == false){
-            abort(403);
-        }
-        if(getAuthUser()->role == 'user'){
+        if (aldLogin()) {
+            if (getAuthUser()->role == "user") {
+                return redirect('/user/home');
+            } else if (getAuthUser()->role == "company") {
+                return redirect('/company/home');
+            } else if (getAuthUser()->role == "owner") {
+                return redirect('/owner');
+            }
+        } else {
             return $next($request);
         }
-        abort(403);
     }
 }

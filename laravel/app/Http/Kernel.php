@@ -2,6 +2,9 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\CekCompany;
+use App\Http\Middleware\cekHome;
+use App\Http\Middleware\CekUser;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -63,5 +66,8 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'cekUser' => CekUser::class,
+        'cekHome' => cekHome::class,
+        'cekCompany' => CekCompany::class,
     ];
 }

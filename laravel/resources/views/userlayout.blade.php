@@ -48,7 +48,7 @@
                                 </div>
                                 <!-- Header-btn -->
                                 <div class="header-btn d-none f-right d-lg-block">
-                                    <a href="logout" class="btn head-btn1">Logout</a>
+                                    <a href="{{url('/doLogout')}}" class="btn head-btn1">Logout</a>
                                 </div>
                             </div>
                         </div>

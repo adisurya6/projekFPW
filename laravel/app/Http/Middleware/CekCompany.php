@@ -4,9 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class CekUser
+class CekCompany
 {
     /**
      * Handle an incoming request.
@@ -20,7 +19,7 @@ class CekUser
         if(aldLogin() == false){
             abort(403);
         }
-        if(getAuthUser()->role == 'user'){
+        if(getAuthUser()->role == 'company'){
             return $next($request);
         }
         abort(403);
