@@ -76,6 +76,7 @@
                         <form method="post" action="{{url('/user/doApply')}}">
                             @csrf
                             <input type="hidden" name="user_id" value="{{getAuthUser()->id}}">
+                            <input type="hidden" name="job_id" value="{{$job->id}}">
                             <input type="hidden" name="titles" value="{{$job->title}}">
                             <input type="hidden" name="company_id" value="">
                             <input type="submit" class="btn" value="Apply">

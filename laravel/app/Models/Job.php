@@ -32,7 +32,7 @@ class Job extends Model
         // Param 3. kau punya apa untuk masuk ke pivot?
         // Param 4. lha table yg kamu rujuk dia dikenali sebagai apa di pivot?
 
-        return $this->belongsToMany(Users::class, 'applications', 'Job_id', 'user_id');
+        return $this->belongsToMany(Users::class, 'applications', 'Job_id', 'user_id')->withPivot('status');
     }
 
     public function Type()

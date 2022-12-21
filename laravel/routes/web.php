@@ -140,7 +140,7 @@ Route::prefix('user')->middleware('cekUser')->group( function() {
         // dd($request);
         $users = Users::find($request->user_id);
         $status = ['status'=>0];
-        $users->Jobs()->attach($status);
+        $users->Jobs()->attach($request->job_id, $status);
         $log = [
             'message' => getAuthUser()->first_name . " ". getAuthUser()->last_name . " Successfully applied for " . $request->titles. ' with job id of ' . Job::count()
         ];
@@ -232,7 +232,14 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
             'message' => getAuthUser()->name . " Successfully added " . $request->title. ' with id ' . Job::count()
         ];
         JobLog::create($log);
+
         $saldo = Company::where('id', '=', getAuthUser()->id)->first();
+        if($saldo->saldo < 50000){
+            Session::flash('message', 'You do not have enough Balance!');
+            Session::flash('alert-class', 'alert-danger');
+            return redirect('/company/addjob');
+
+        }
 
         $saldo = (int)$saldo->saldo - 50000;
 
@@ -251,6 +258,20 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
 
     });
 
+    Route::get('applications', function(Request $request){
+        $jobs = Job::where('company_id', '=', getAuthUser()->id)->get();
+        // $users = Users::all();
+        // dd($jobs);
+        // dd($jobs->Users()->wherePivot('job_id', $jobs->id));
+        return view('companyapplications', compact('jobs'));
+    });
+
+    Route::get('/plan', function(Request $request){
+        $jobs = Job::where('id', '=', $request->id1)->first();
+        $jobs->Users()->updateExistingPivot($request->id2, ['status' => 1]);
+        Session::flash('message', 'Successfully planned an interview!');
+        return redirect('/company/applications');
+    });
 
 
     Route::prefix('profile')->group( function() {
@@ -298,5 +319,7 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
             );
             return redirect()->back();
         });
+
     });
+
 });

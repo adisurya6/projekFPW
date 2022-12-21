@@ -52,6 +52,9 @@
             <input type="hidden" name="company_id" value="{{getAuthUser()->id}}">
             <button type="submit" class="btn mt-10">Add Job</button>
         </form>
+        @if (Session::has('message'))
+        <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
+    @endif
 
 </div>
 @endsection
