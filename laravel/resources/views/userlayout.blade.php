@@ -39,10 +39,10 @@
                                 <div class="main-menu">
                                     <nav class="d-none d-lg-block">
                                         <ul id="navigation">
-                                            <li><a href="home">Home</a></li>
-                                            <li><a href="listing">Find a Job </a></li>
-                                            <li><a href="applications">My Applications </a></li>
-                                            <li><a href="profile">My Profile </a></li>
+                                            <li><a href="{{url('/')}}">Home</a></li>
+                                            <li><a href="{{url('/user/listing')}}">Find a Job </a></li>
+                                            <li><a href="{{url('/user/applications')}}">My Applications </a></li>
+                                            <li><a href="{{url('/user/profile')}}">My Profile </a></li>
                                         </ul>
                                     </nav>
                                 </div>

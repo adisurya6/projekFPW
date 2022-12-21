@@ -34,4 +34,10 @@ class Job extends Model
 
         return $this->belongsToMany(Users::class, 'applications', 'Job_id', 'user_id');
     }
+
+    public function Type()
+    {
+        return $this->hasOne(JobType::class, 'id', 'type_id');
+    }
 }
+

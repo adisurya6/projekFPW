@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer("min");
             $table->integer("max");
             $table->string("location", 255);
-            $table->integer("type_id");
+            $table->integer("type_id")->comment('1 fulltime, 2 parttime, 3 internship');
             $table->integer("company_id");
             $table->timestamps(); // created_at dan updated_at
             $table->softDeletes();

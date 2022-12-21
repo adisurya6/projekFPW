@@ -5,15 +5,16 @@
     <div class="single-job-items mb-50">
         <div class="job-items">
             <div class="company-img company-img-details">
-                <a href="#"><img src="{{asset('img/icon/blank.png')}}" alt="{{asset('img/icon/blank.png')}}'"></a>
+                @foreach ($user as $u)
+
+
+                <a href="#"><img src="{{asset('img/icon/'. $u->image)}}" height="100px" width="100px" alt="'"></a>
 
             </div>
             <div class="job-tittle">
-                    <h4>John</h4>
+                    <h4>{{$u->first_name . " " . $u->last_name}}</h4>
                 <ul>
-                    <li>Creative Agency</li>
-                    <li><i class="fas fa-map-marker-alt"></i>Athens, Greece</li>
-                    <li>hr@abc.com</li>
+                    <li>{{$u->email}}</li>
                 </ul>
             </div>
 
@@ -27,12 +28,15 @@
     </form>
     <form action="{{ url('user/profile/addCV') }}" method="POST" enctype="multipart/form-data">
         @csrf
-        Add your CV :
+        Add your CV (in .pdf format) :
         <input type="file" name="cv" id="" class="form-control">
         <input type="submit" value="Upload" class="btn">
     </form>
-
-
+    <a href={{url('/user/profile/download')}} style="font-size:15px; color:cornflowerblue;">Download your CV</a>
+    @if (Session::has('message'))
+        <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
+    @endif
+    @endforeach
 
 </div>
 

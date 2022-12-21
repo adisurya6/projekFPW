@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id("id");
             $table->integer("user_id");
             $table->integer("Job_id");
-            $table->integer("status");
+            $table->integer("status")->default(0);
             $table->timestamps(); // created_at dan updated_at
             $table->softDeletes();
         });

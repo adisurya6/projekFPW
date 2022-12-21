@@ -29,4 +29,9 @@ class Company extends Authenticatable
 
         return $this->hasMany(Job::class, "company_id", "id");
     }
+
+    public function Transaction()
+    {
+        return $this->hasMany(Transaction::class, "company_id", "id");
+    }
 }

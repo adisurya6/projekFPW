@@ -15,4 +15,9 @@ class Transaction extends Model
     public $incrementing = true;
     public $timestamps = true;
     protected $guarded = [];
+
+    public function Company()
+    {
+        $this->belongsTo(Company::class, "company_id", "id");
+    }
 }

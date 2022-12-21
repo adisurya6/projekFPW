@@ -15,4 +15,8 @@ class JobType extends Model
     public $incrementing = true;
     public $timestamps = true;
     protected $guarded = [];
+
+    public function Job (){
+        return $this->belongsTo(Job::class, "type_id", "id");
+    }
 }
