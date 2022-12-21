@@ -1,47 +1,35 @@
 @extends('userlayout')
 @section('konten')
-<div class="container">
-@foreach ($jobs as $j)
-<h3>{{$j->title}}</h3>
+<div class="container" style="margin-top:100px; margin-bottom:100px;">
+@foreach ($users as $u)
 <table class="table">
     <tr>
-        <th>First Name</th>
-        <th>Last Name</th>
-        <th>Email</th>
-        <th>Phone Number</th>
-        <th>Gender</th>
-        <th>CV</th>
-        <th>Action</th>
+        <th>Job Title</th>
+        <th>Description</th>
+        <th>Job Type</th>
+        <th>Company Name</th>
+        <th>Job Location</th>
+        <th>Status</th>
     </tr>
 
         <tr>
-            @foreach ($j->users as $u)
+            @foreach ($u->jobs as $j)
 
+            @php
 
-            <td>{{ $u->first_name}}</td>
-            <td>{{ $u->last_name }}</td>
-            <td>{{ $u->email }}</td>
-            <td>{{ $u->number }}</td>
-            <td>{{ $u->gender }}</td>
-            <td>{{ $u->CV }}</td>
-            <td>
-                <form action="{{url("company/plan")}}" method="get">
-                    @csrf
-                    <input type="hidden" name="id1" value="{{$j->id}}">
-                    <input type="hidden" name="id2" value="{{$u->id}}">
-                    {{-- @php
-                        $jbs = Job::where('id', '=', $j->id)->first();
-                        $jbs->Users()->updateExistingPivot($u->id, ['status' => 1]);
-                    @endphp --}}
-                    @if($u->pivot->status == 1)
+                if($j->pivot->status == 1){
+                    $stat = "Interview Planned";
+                }else{
+                    $stat = "Waiting for Company";
+                }
+            @endphp
+            <td>{{ $j->title}}</td>
+            <td>{{ $j->description }}</td>
+            <td>{{ $j->Type->type }}</td>
+            <td>{{ $j->Company->name }}</td>
+            <td>{{ $j->location }}</td>
+            <td>{{ $stat }}</td>
 
-                    <input type="submit" value="Already Planned" disabled="true"  class="btn" style="width:195px;">
-                    @else
-
-                    <input type="submit" value="Plan Interview"  class="btn btn-primary">
-                    @endif
-                </form>
-            </td>
         </tr>
             @endforeach
         </table>

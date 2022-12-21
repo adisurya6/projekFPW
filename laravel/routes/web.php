@@ -26,7 +26,8 @@ use Illuminate\Support\Facades\Storage;
 */
 
 Route::get('/', function (){
-    return view('main');
+    $jobs = Job::orderBy('created_at','desc')->get()->take(3);
+    return view('main', compact('jobs'));
 })->middleware('cekHome');
 
 Route::get('/login', function () {
@@ -84,6 +85,8 @@ Route::post('/register/doRegister', function(Request $request){
     $validatedData['password'] = Hash::make($validatedData['password']);
 
     Users::create($validatedData);
+
+    Session::flash('message', 'Successfully Registered! Please Login');
     return redirect('/login')->with('success', 'Registration Succesfull! Please Login');
 })->middleware('cekHome');
 
@@ -105,8 +108,35 @@ Route::post('/registerc/doRegister', function(Request $request){
     $validatedData['password'] = Hash::make($validatedData['password']);
 
     Company::create($validatedData);
+
+    Session::flash('message', 'Successfully Registered! Please Login');
     return redirect('/login')->with('success', 'Registration Succesfull! Please Login');
 })->middleware('cekHome');
+
+Route::get('/listing', function(Request $request){
+    $count = 0;
+        if($request->has('search')) {
+            $jobs = Job::where('title', 'like', '%'.$request->search.'%')->get();
+            $count = Job::where('title', 'like', '%'.$request->search.'%')->count();
+        } else {
+            $jobs = Job::all();
+            $count = Job::count();
+        }
+
+
+        return view('listing', compact('jobs', 'count'));
+});
+
+Route::get('/job/{id}',function($id){
+    $jobs = Job::where('id', '=', $id)->get();
+    return view('rawdetail', compact('jobs') );
+});
+
+Route::get('/details/fail', function(){
+    Session::flash('message', 'Please Login First!');
+    Session::flash('alert-class', 'alert-danger');
+    return view('login');
+});
 
 Route::prefix('user')->middleware('cekUser')->group( function() {
     Route::get('/', function() {
@@ -114,7 +144,8 @@ Route::prefix('user')->middleware('cekUser')->group( function() {
     });
 
     Route::get('/home', function(){
-        return view('userhome');
+        $jobs = Job::orderBy('created_at','desc')->get()->take(3);
+        return view('userhome', compact('jobs'));
     })->name('user-home');
 
     Route::get('/listing',function(Request $request){
@@ -133,7 +164,8 @@ Route::prefix('user')->middleware('cekUser')->group( function() {
 
     Route::get('/job/{id}',function($id){
         $jobs = Job::where('id', '=', $id)->get();
-        return view('details', compact('jobs') );
+        $user = Users::where('id', '=', getAuthUser()->id)->first();
+        return view('details', compact('jobs', 'user') );
     });
 
     Route::post('/doApply', function(Request $request){
@@ -146,6 +178,14 @@ Route::prefix('user')->middleware('cekUser')->group( function() {
         ];
         ApplicationLog::create($log);
         return redirect()->back();
+    });
+
+    Route::get('/applications', function(Request $request){
+        $users = Users::where('id', '=', getAuthUser()->id)->get();
+        // $users = Users::all();
+        // dd($jobs);
+        // dd($jobs->Users()->wherePivot('job_id', $jobs->id));
+        return view('userapplication', compact('users'));
     });
 
     Route::prefix('profile')->group( function() {
@@ -209,7 +249,8 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
     });
 
     Route::get('/home', function(){
-        return view('companyhome');
+        $jobs = Job::orderBy('created_at','desc')->get()->take(3);
+        return view('companyhome', compact('jobs'));
     })->name('company-home');
 
     Route::get('/addjob', function(){
@@ -254,8 +295,57 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
                 'company_id' => getAuthUser()->id
             ]
         );
-        return redirect('/company/addjob')->with('success', 'Job has been successfully posted');
+        Session::flash('message', 'Successfully posted a Job!');
+        return redirect('/company/jobs');
 
+    });
+
+    Route::get('/jobs', function(){
+        $jobs = Job::where('company_id', '=', getAuthUser()->id)->get();
+        return view('companyjobs', compact('jobs'));
+    });
+
+    Route::get('/jobs/edit/{id}', function($id){
+        $job = Job::where('id', '=', $id)->first();
+        return view('companyedit', compact('job'));
+    });
+    Route::get('/jobs/close/{id}', function($id){
+        $job = Job::where('id', '=', $id)->first();
+        $tempjob = $job;
+        $job->delete();
+        Session::flash('message', 'Successfully closed the job request for '. $tempjob->title . '!');
+        $log = [
+            'message' => getAuthUser()->name . " Successfully deleted " . $tempjob->title. ' with id ' . $tempjob->id
+        ];
+        JobLog::create($log);
+        $jobs = Job::where('company_id', '=', getAuthUser()->id)->get();
+        return view('companyjobs', compact('jobs'));
+    });
+
+    Route::post('/jobs/doEdit', function(Request $request){
+        $job = Job::where('id', '=', $request->job_id)->first();
+        $validatedData = $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+            'min' => 'required|numeric',
+            'max' => 'required|numeric',
+            'location'=> 'required',
+            'type_id'=> 'required|numeric',
+        ]);
+        // $job = $validatedData;
+        $job->title = $request->title;
+        $job->description = $request->description;
+        $job->min = $request->min;
+        $job->max = $request->max;
+        $job->location = $request->location;
+        $job->type_id = $request->type_id;
+        $job->save();
+
+        $log = [
+            'message' => getAuthUser()->name . " Successfully updated " . $request->title. ' with id ' . $request->job_id
+        ];
+        JobLog::create($log);
+        return redirect('/company/jobs')->with('message', 'Job has been successfully updated');
     });
 
     Route::get('applications', function(Request $request){

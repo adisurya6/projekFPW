@@ -38,86 +38,34 @@
             </div>
             <div class="row justify-content-center">
                 <div class="col-xl-10">
-                    <!-- single-job-content -->
-                    <div class="single-job-items mb-30">
-                        <div class="job-items">
-                            <div class="company-img">
-                                <a href="job_details.html"><img src="{{asset('img/icon/job-list1.png') }}" alt=""></a>
-                            </div>
-                            <div class="job-tittle">
-                                <a href="job_details.html"><h4>Digital Marketer</h4></a>
-                                <ul>
-                                    <li>Creative Agency</li>
-                                    <li><i class="fas fa-map-marker-alt"></i>Athens, Greece</li>
-                                    <li>$3500 - $4000</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="items-link f-right">
-                            <a href="job_details.html">Full Time</a>
-                            <span>7 hours ago</span>
-                        </div>
-                    </div>
-                    <!-- single-job-content -->
-                    <div class="single-job-items mb-30">
-                        <div class="job-items">
-                            <div class="company-img">
-                                <a href="job_details.html"><img src="{{asset('img/icon/job-list2.png')}}" alt=""></a>
-                            </div>
-                            <div class="job-tittle">
-                                <a href="job_details.html"><h4>Digital Marketer</h4></a>
-                                <ul>
-                                    <li>Creative Agency</li>
-                                    <li><i class="fas fa-map-marker-alt"></i>Athens, Greece</li>
-                                    <li>$3500 - $4000</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="items-link f-right">
-                            <a href="job_details.html">Full Time</a>
-                            <span>7 hours ago</span>
-                        </div>
-                    </div>
+
                      <!-- single-job-content -->
-                    <div class="single-job-items mb-30">
-                        <div class="job-items">
-                            <div class="company-img">
-                                <a href="job_details.html"><img src="{{asset('img/icon/job-list3.png')}}" alt=""></a>
-                            </div>
-                            <div class="job-tittle">
-                                <a href="job_details.html"><h4>Digital Marketer</h4></a>
-                                <ul>
-                                    <li>Creative Agency</li>
-                                    <li><i class="fas fa-map-marker-alt"></i>Athens, Greece</li>
-                                    <li>$3500 - $4000</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="items-link f-right">
-                            <a href="job_details.html">Full Time</a>
-                            <span>7 hours ago</span>
-                        </div>
-                    </div>
+                     @foreach ($jobs as $j)
+                     <div class="single-job-items mb-30">
+                         <div class="job-items">
+                             <div class="company-img">
+                                 <a href="{{url('job/'.$j->id)}}"><img src="{{asset('img/icon/'.$j->Company->image)}}" alt=""></a>
+                             </div>
+                             <div class="job-tittle job-tittle2">
+                                 <a href="{{url('job/'.$j->id)}}">
+                                     <h4>{{$j->title}}</h4>
+                                 </a>
+                                 <ul>
+                                     <li>{{$j->Company->name}}</li>
+                                     <li><i class="fas fa-map-marker-alt"></i>{{$j->location}}</li>
+                                     <li>Rp.{{number_format($j->min, 2, ',','.')}} - Rp.{{number_format($j->max, 2, ',','.')}}</li>
+
+                                 </ul>
+                             </div>
+                         </div>
+                         <div class="items-link items-link2 f-right">
+                         <a href="#">{{$j->Type->type}}</a>
+                             <span>{{$j->updated_at}}</span>
+                         </div>
+                     </div>
+                     @endforeach
                      <!-- single-job-content -->
-                    <div class="single-job-items mb-30">
-                        <div class="job-items">
-                            <div class="company-img">
-                                <a href="job_details.html"><img src="{{asset('img/icon/job-list4.png')}}" alt=""></a>
-                            </div>
-                            <div class="job-tittle">
-                                <a href="job_details.html"><h4>Digital Marketer</h4></a>
-                                <ul>
-                                    <li>Creative Agency</li>
-                                    <li><i class="fas fa-map-marker-alt"></i>Athens, Greece</li>
-                                    <li>$3500 - $4000</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="items-link f-right">
-                            <a href="job_details.html">Full Time</a>
-                            <span>7 hours ago</span>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -144,7 +92,7 @@
                         </div>
                         <div class="process-cap">
                            <h5>1. Search a job</h5>
-                           <p>Sorem spsum dolor sit amsectetur adipisclit, seddo eiusmod tempor incididunt ut laborea.</p>
+                           <p>Search for a job with our website.</p>
                         </div>
                     </div>
                 </div>
@@ -155,7 +103,7 @@
                         </div>
                         <div class="process-cap">
                            <h5>2. Apply for job</h5>
-                           <p>Sorem spsum dolor sit amsectetur adipisclit, seddo eiusmod tempor incididunt ut laborea.</p>
+                           <p>Apply for the job you want to.</p>
                         </div>
                     </div>
                 </div>
@@ -166,7 +114,7 @@
                         </div>
                         <div class="process-cap">
                            <h5>3. Get your job</h5>
-                           <p>Sorem spsum dolor sit amsectetur adipisclit, seddo eiusmod tempor incididunt ut laborea.</p>
+                           <p>Wait for the company to contact you.</p>
                         </div>
                     </div>
                 </div>

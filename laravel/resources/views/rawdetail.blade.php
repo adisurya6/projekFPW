@@ -1,4 +1,4 @@
-@extends('userlayout')
+@extends('layout')
 @section('konten')
 <main>
 
@@ -73,25 +73,9 @@
                       </ul>
 
                      <div class="apply-btn2">
-                        <form method="post" action="{{url('/user/doApply')}}">
-                            @csrf
-                            @foreach ($user->jobs as $j)
 
+                            <a href="/details/fail" class="btn btn-primary">Apply</a>
 
-                            <input type="hidden" name="user_id" value="{{getAuthUser()->id}}">
-                            <input type="hidden" name="job_id" value="{{$job->id}}">
-                            <input type="hidden" name="titles" value="{{$job->title}}">
-                            <input type="hidden" name="company_id" value="">
-                            @if($j->pivot->status == 1 && $j->id == $job->id)
-
-                            <input type="submit" value="Already Applied" disabled="true"  class="btn" style="width:195px;">
-                            @else
-
-                            <input type="submit" value="Apply"  class="btn btn-primary">
-                            @endif
-
-                            @endforeach
-                        </form>
                      </div>
                    </div>
                     <div class="post-details4  mb-50">

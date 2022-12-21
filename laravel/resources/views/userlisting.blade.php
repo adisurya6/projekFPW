@@ -18,7 +18,7 @@
     </div>
     <!-- Hero Area End -->
     <!-- Job List Area Start -->
-    <div class="job-listing-area pt-120 pb-120">
+    <div class="job-listing-area pt-120 pb-120 d-flex">
         <div class="container">
             <div class="row">
                 <!-- Left content -->
@@ -84,9 +84,9 @@
                                             <h4>{{$j->title}}</h4>
                                         </a>
                                         <ul>
-                                            <li>{{$j->Company->name}}</li>
-                                            <li><i class="fas fa-map-marker-alt"></i>{{$j->Company->name}}</li>
-                                            <li>{{$j->min}} - {{$j->max}}</li>
+                                            <li style="font-size:12px;">{{$j->Company->name}}</li>
+                                            <li style="font-size:12px;"><i class="fas fa-map-marker-alt"></i>{{$j->location}}</li>
+                                            <li style="font-size:12px;">Rp.{{number_format($j->min, 2, ',','.')}} - Rp.{{number_format($j->max, 2, ',','.')}}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -96,29 +96,7 @@
                                 </div>
                             </div>
                             @endforeach
-                            <!-- single-job-content -->
-                            <div class="single-job-items mb-30">
-                                <div class="job-items">
-                                    <div class="company-img">
-                                        <a href="#"><img src="{{asset('img/icon/job-list2.png')}}" alt=""></a>
-                                    </div>
-                                    <div class="job-tittle job-tittle2">
-                                        <a href="#">
-                                            <h4>Digital Marketer</h4>
-                                        </a>
-                                        <ul>
-                                            <li>Creative Agency</li>
-                                            <li><i class="fas fa-map-marker-alt"></i>Athens, Greece</li>
-                                            <li>$3500 - $4000</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="items-link items-link2 f-right">
-                                    <a href="job_details.html">Full Time</a>
-                                    <span>7 hours ago</span>
-                                </div>
-                            </div>
-                            <!-- single-job-content end -->
+
 
                         </div>
                     </section>
@@ -128,26 +106,7 @@
         </div>
     </div>
     <!-- Job List Area End -->
-    <!--Pagination Start  -->
-    <div class="pagination-area pb-115 text-center">
-        <div class="container">
-            <div class="row">
-                <div class="col-xl-12">
-                    <div class="single-wrap d-flex justify-content-center">
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination justify-content-start">
-                                <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                                <li class="page-item"><a class="page-link" href="#">02</a></li>
-                                <li class="page-item"><a class="page-link" href="#">03</a></li>
-                            <li class="page-item"><a class="page-link" href="#"><span class="ti-angle-right"></span></a></li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--Pagination End  -->
+
 
 </main>
 
