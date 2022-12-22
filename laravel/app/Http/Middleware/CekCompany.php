@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use App\Helpers\AuthHelper;
 
 class CekCompany
 {
@@ -16,10 +17,10 @@ class CekCompany
      */
     public function handle(Request $request, Closure $next)
     {
-        if(aldLogin() == false){
+        if(AuthHelper::aldLogin() == false){
             abort(403);
         }
-        if(getAuthUser()->role == 'company'){
+        if(AuthHelper::getAuthUser()->role == 'company'){
             return $next($request);
         }
         abort(403);

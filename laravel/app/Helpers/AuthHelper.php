@@ -1,26 +1,31 @@
 <?php
-
+namespace App\Helpers;
 use Illuminate\Support\Facades\Auth;
 
-function aldLogin(){
-    if(Auth::guard('web')->check() || Auth::guard('company')->check()){
-        return true;
-    }else{
-        return false;
-    }
-}
-
-function getAuthUser()
+class AuthHelper
 {
-    if(aldLogin() == false){
-        return false;
-    }else{
-        if(Auth::guard('web')->check()){
-            return auth::guard('web')->user();
+    public static function aldLogin(){
+        if(Auth::guard('web')->check() || Auth::guard('company')->check()){
+            return true;
         }else{
-            return Auth::guard('company')->user();
+            return false;
+        }
+    }
+
+    public static function getAuthUser()
+    {
+        if(Auth::guard('web')->check() || Auth::guard('company')->check()){
+            if(Auth::guard('web')->check()){
+                return auth::guard('web')->user();
+            }else{
+                return Auth::guard('company')->user();
+            }
+        }else{
+            return false;
         }
     }
 }
+
+
 
 ?>

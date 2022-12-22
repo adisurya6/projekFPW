@@ -78,7 +78,7 @@
                             @foreach ($user->jobs as $j)
 
 
-                            <input type="hidden" name="user_id" value="{{getAuthUser()->id}}">
+                            <input type="hidden" name="user_id" value="{{AuthHelper::getAuthUser()->id}}">
                             <input type="hidden" name="job_id" value="{{$job->id}}">
                             <input type="hidden" name="titles" value="{{$job->title}}">
                             <input type="hidden" name="company_id" value="">

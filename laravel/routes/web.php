@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\AuthHelper;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,7 +58,7 @@ Route::post('/doLogin', function (Request $request) {
 })->middleware('cekHome');
 
 Route::get('/doLogout', function(Request $req){
-    if(aldLogin()){
+    if(AuthHelper::aldLogin()){
 
     }
     if(Auth::guard('web')->check()){
@@ -166,7 +167,7 @@ Route::prefix('user')->middleware('cekUser')->group( function() {
 
     Route::get('/job/{id}',function($id){
         $jobs = Job::where('id', '=', $id)->get();
-        $user = Users::where('id', '=', getAuthUser()->id)->first();
+        $user = Users::where('id', '=', AuthHelper::getAuthUser()->id)->first();
         return view('details', compact('jobs', 'user') );
     });
 
@@ -176,14 +177,14 @@ Route::prefix('user')->middleware('cekUser')->group( function() {
         $status = ['status'=>0];
         $users->Jobs()->attach($request->job_id, $status);
         $log = [
-            'message' => getAuthUser()->first_name . " ". getAuthUser()->last_name . " Successfully applied for " . $request->titles. ' with job id of ' . Job::count()
+            'message' => AuthHelper::getAuthUser()->first_name . " ". AuthHelper::getAuthUser()->last_name . " Successfully applied for " . $request->titles. ' with job id of ' . Job::count()
         ];
         ApplicationLog::create($log);
         return redirect()->back();
     });
 
     Route::get('/applications', function(Request $request){
-        $users = Users::where('id', '=', getAuthUser()->id)->get();
+        $users = Users::where('id', '=', AuthHelper::getAuthUser()->id)->get();
         // $users = Users::all();
         // dd($jobs);
         // dd($jobs->Users()->wherePivot('job_id', $jobs->id));
@@ -192,7 +193,7 @@ Route::prefix('user')->middleware('cekUser')->group( function() {
 
     Route::prefix('profile')->group( function() {
         Route::get('/',function(){
-            $user = Users::where('id', '=', getAuthUser()->id)->get();
+            $user = Users::where('id', '=', AuthHelper::getAuthUser()->id)->get();
             return view('userprofile', compact('user'));
         });
         Route::post('/doUpload',function(Request $request){
@@ -203,10 +204,10 @@ Route::prefix('user')->middleware('cekUser')->group( function() {
             );
 
             $file = $request->file('photo') ;
-            $fileName = getAuthUser()->id . ".png";
+            $fileName = AuthHelper::getAuthUser()->id . ".png";
             $destinationPath = public_path().'/img/icon' ;
             $file->move($destinationPath,$fileName);
-            $user = Users::where('id', '=', getAuthUser()->id)->first();
+            $user = Users::where('id', '=', AuthHelper::getAuthUser()->id)->first();
             $user->image = $fileName;
             $user->save();
             return redirect()->back();
@@ -219,10 +220,10 @@ Route::prefix('user')->middleware('cekUser')->group( function() {
             );
 
             $file = $request->file('cv') ;
-            $fileName = getAuthUser()->id . ".pdf";
+            $fileName = AuthHelper::getAuthUser()->id . ".pdf";
             $destinationPath = public_path().'/cv' ;
             $file->move($destinationPath,$fileName);
-            $user = Users::where('id', '=', getAuthUser()->id)->first();
+            $user = Users::where('id', '=', AuthHelper::getAuthUser()->id)->first();
             $user->cv = $fileName;
             $user->save();
 
@@ -230,10 +231,10 @@ Route::prefix('user')->middleware('cekUser')->group( function() {
         });
         Route::get('/download', function(){
 
-            if (file_exists(public_path("/cv/" . getAuthUser()->id . ".pdf"))){
-                $file = public_path()."/cv/" . getAuthUser()->id . ".pdf";
+            if (file_exists(public_path("/cv/" . AuthHelper::getAuthUser()->id . ".pdf"))){
+                $file = public_path()."/cv/" . AuthHelper::getAuthUser()->id . ".pdf";
                 $headers = array('Content-Type: application/pdf',);
-                return Response::download($file, getAuthUser()->first_name . ".pdf",$headers);
+                return Response::download($file, AuthHelper::getAuthUser()->first_name . ".pdf",$headers);
 
             }else{
                 Session::flash('message', 'You have not uploaded a CV Yet!');
@@ -286,11 +287,11 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
         Job::create($validatedData);
 
         $log = [
-            'message' => getAuthUser()->name . " Successfully added " . $request->title. ' with id ' . Job::count()
+            'message' => AuthHelper::getAuthUser()->name . " Successfully added " . $request->title. ' with id ' . Job::count()
         ];
         JobLog::create($log);
 
-        $saldo = Company::where('id', '=', getAuthUser()->id)->first();
+        $saldo = Company::where('id', '=', AuthHelper::getAuthUser()->id)->first();
         if($saldo->saldo < 50000){
             Session::flash('message', 'You do not have enough Balance!');
             Session::flash('alert-class', 'alert-danger');
@@ -300,7 +301,7 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
 
         $saldo = (int)$saldo->saldo - 50000;
 
-        $company = Company::where('id', '=', getAuthUser()->id)->first();
+        $company = Company::where('id', '=', AuthHelper::getAuthUser()->id)->first();
         $company->saldo = $saldo;
         $company->save();
 
@@ -308,7 +309,7 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
             [
                 'type' => 'Company Posted a Job',
                 'amount' => 50000,
-                'company_id' => getAuthUser()->id
+                'company_id' => AuthHelper::getAuthUser()->id
             ]
         );
         Session::flash('message', 'Successfully posted a Job!');
@@ -317,7 +318,7 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
     });
 
     Route::get('/jobs', function(){
-        $jobs = Job::where('company_id', '=', getAuthUser()->id)->get();
+        $jobs = Job::where('company_id', '=', AuthHelper::getAuthUser()->id)->get();
         return view('companyjobs', compact('jobs'));
     });
 
@@ -331,10 +332,10 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
         $job->delete();
         Session::flash('message', 'Successfully closed the job request for '. $tempjob->title . '!');
         $log = [
-            'message' => getAuthUser()->name . " Successfully deleted " . $tempjob->title. ' with id ' . $tempjob->id
+            'message' => AuthHelper::getAuthUser()->name . " Successfully deleted " . $tempjob->title. ' with id ' . $tempjob->id
         ];
         JobLog::create($log);
-        $jobs = Job::where('company_id', '=', getAuthUser()->id)->get();
+        $jobs = Job::where('company_id', '=', AuthHelper::getAuthUser()->id)->get();
         return view('companyjobs', compact('jobs'));
     });
 
@@ -358,14 +359,14 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
         $job->save();
 
         $log = [
-            'message' => getAuthUser()->name . " Successfully updated " . $request->title. ' with id ' . $request->job_id
+            'message' => AuthHelper::getAuthUser()->name . " Successfully updated " . $request->title. ' with id ' . $request->job_id
         ];
         JobLog::create($log);
         return redirect('/company/jobs')->with('message', 'Job has been successfully updated');
     });
 
     Route::get('applications', function(Request $request){
-        $jobs = Job::where('company_id', '=', getAuthUser()->id)->get();
+        $jobs = Job::where('company_id', '=', AuthHelper::getAuthUser()->id)->get();
         // $users = Users::all();
         // dd($jobs);
         // dd($jobs->Users()->wherePivot('job_id', $jobs->id));
@@ -386,7 +387,7 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
 
     Route::prefix('profile')->group( function() {
         Route::get('/',function(){
-            $company = Company::where('id', '=', getAuthUser()->id)->get();
+            $company = Company::where('id', '=', AuthHelper::getAuthUser()->id)->get();
             return view('companyprofile', compact('company'));
         });
         Route::post('/doUpload',function(Request $request){
@@ -397,10 +398,10 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
             );
 
             $file = $request->file('photo') ;
-            $fileName = getAuthUser()->id . ".png";
+            $fileName = AuthHelper::getAuthUser()->id . ".png";
             $destinationPath = public_path().'/img/icon' ;
             $file->move($destinationPath,$fileName);
-            $user = Company::where('id', '=', getAuthUser()->id)->first();
+            $user = Company::where('id', '=', AuthHelper::getAuthUser()->id)->first();
             $user->image = $fileName;
             $user->save();
             return redirect()->back();
@@ -412,11 +413,11 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
                 ]
             );
 
-            $saldo = Company::where('id', '=', getAuthUser()->id)->first();
+            $saldo = Company::where('id', '=', AuthHelper::getAuthUser()->id)->first();
 
             $saldo = (int)$saldo->saldo + (int)$request->saldo;
 
-            $company = Company::where('id', '=', getAuthUser()->id)->first();
+            $company = Company::where('id', '=', AuthHelper::getAuthUser()->id)->first();
             $company->saldo = $saldo;
             $company->save();
 
@@ -424,7 +425,7 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
                 [
                     'type' => 'Top Up Balance Company',
                     'amount' => $request->saldo,
-                    'company_id' => getAuthUser()->id
+                    'company_id' => AuthHelper::getAuthUser()->id
                 ]
             );
             return redirect()->back();

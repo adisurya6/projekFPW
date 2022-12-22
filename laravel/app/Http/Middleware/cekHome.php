@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\AuthHelper;
 
 class cekHome
 {
@@ -17,12 +18,12 @@ class cekHome
      */
     public function handle(Request $request, Closure $next)
     {
-        if (aldLogin()) {
-            if (getAuthUser()->role == "user") {
+        if (AuthHelper::aldLogin()) {
+            if (AuthHelper::getAuthUser()->role == "user") {
                 return redirect('/user/home');
-            } else if (getAuthUser()->role == "company") {
+            } else if (AuthHelper::getAuthUser()->role == "company") {
                 return redirect('/company/home');
-            } else if (getAuthUser()->role == "owner") {
+            } else if (AuthHelper::getAuthUser()->role == "owner") {
                 return redirect('/owner');
             }
         } else {

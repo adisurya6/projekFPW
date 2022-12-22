@@ -49,7 +49,7 @@
                     </select>
                 </div>
             </div>
-            <input type="hidden" name="company_id" value="{{getAuthUser()->id}}">
+            <input type="hidden" name="company_id" value="{{AuthHelper::getAuthUser()->id}}">
             <button type="submit" class="btn mt-10">Add Job</button>
         </form>
         @if (Session::has('message'))
