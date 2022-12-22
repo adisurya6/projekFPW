@@ -167,7 +167,7 @@ Route::prefix('user')->middleware('cekUser')->group( function() {
 
     Route::get('/job/{id}',function($id){
         $jobs = Job::where('id', '=', $id)->get();
-        $user = Users::where('id', '=', AuthHelper::getAuthUser()->id)->first();
+        $user = Users::where('id', '=', Auth::guard('web')->user()->id)->first();
         return view('details', compact('jobs', 'user') );
     });
 
@@ -399,7 +399,7 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
 
             $file = $request->file('photo') ;
             $fileName = AuthHelper::getAuthUser()->id . ".png";
-            $destinationPath = public_path().'/img/icon' ;
+            $destinationPath = public_path().'/img/icon/company' ;
             $file->move($destinationPath,$fileName);
             $user = Company::where('id', '=', AuthHelper::getAuthUser()->id)->first();
             $user->image = $fileName;

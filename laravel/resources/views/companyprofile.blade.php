@@ -8,7 +8,7 @@
 
 
             <div class="company-img company-img-details">
-                <a href="#"><img src="{{asset('img/icon/'. $c->image)}}" alt=""></a>
+                <a href="#"><img src="{{asset('img/icon/company'. $c->image)}}" alt=""></a>
 
             </div>
             <div class="job-tittle">

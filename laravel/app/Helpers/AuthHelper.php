@@ -16,7 +16,7 @@ class AuthHelper
     {
         if(Auth::guard('web')->check() || Auth::guard('company')->check()){
             if(Auth::guard('web')->check()){
-                return auth::guard('web')->user();
+                return Auth::guard('web')->user();
             }else{
                 return Auth::guard('company')->user();
             }

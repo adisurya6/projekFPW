@@ -29,7 +29,7 @@
 
                         <div class="job-items">
                             <div class="company-img company-img-details">
-                                <a href="#"><img src="{{asset('img/icon/'.$job->Company->image)}}" alt=""></a>
+                                <a href="#"><img src="{{asset('img/icon/company/'.$job->Company->image)}}" alt=""></a>
                             </div>
                             <div class="job-tittle">
                                 <a href="#">
