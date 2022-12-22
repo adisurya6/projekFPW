@@ -1,6 +1,6 @@
 @extends('companylayout')
 @section('konten')
-<div class="container mt-10" style="margin-top:100px;">
+<div class="container mt-10" style="margin-top:70px; margin-bottom:50px">
     @if (Session::has("message"))
         <div class="alert alert-success">
             {{ Session::get("message") }}
@@ -9,7 +9,7 @@
 
 
 @foreach ($jobs as $j)
-<h3>{{$j->title}}</h3>
+<h3 style="margin-top:50px;">{{$j->title}}</h3>
 <table class="table">
     <tr>
         <th>First Name</th>
@@ -17,6 +17,7 @@
         <th>Email</th>
         <th>Phone Number</th>
         <th>Gender</th>
+        <th>Age</th>
         <th>CV</th>
         <th>Action</th>
     </tr>
@@ -24,13 +25,25 @@
         <tr>
             @foreach ($j->users as $u)
 
+            @php
+                $bday = new DateTime($u->dob); // Your date of birth
+                $today = new Datetime(date('m.d.y'));
+                $diff = $today->diff($bday);
+            @endphp
 
             <td>{{ $u->first_name}}</td>
             <td>{{ $u->last_name }}</td>
             <td>{{ $u->email }}</td>
             <td>{{ $u->number }}</td>
             <td>{{ $u->gender }}</td>
-            <td>{{ $u->CV }}</td>
+            <td>{{ $diff->y }}</td>
+            <td>
+                @if ($u->cv)
+                    <a href={{url('/company/applications/download/'.$u->id)}} style='font-size:15px; color:cornflowerblue;''>{{$u->first_name}}.pdf</a>
+                @else
+
+                @endif
+            </td>
             <td>
                 <form action="{{url("company/plan")}}" method="get">
                     @csrf

@@ -1,5 +1,6 @@
 <?php
 
+use App\Mail\InterviewMail;
 use App\Models\ApplicationLog;
 use Illuminate\Support\Facades\Route;
 use App\Models\Users;
@@ -10,6 +11,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
@@ -257,6 +259,20 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
         return view('addjob');
     });
 
+    Route::get('/applications/download/{id}', function($id){
+
+        if (file_exists(public_path("/cv/" . $id . ".pdf"))){
+            $file = public_path()."/cv/" . $id . ".pdf";
+            $headers = array('Content-Type: application/pdf',);
+            $user = Users::where('id', '=', $id)->first();
+            return Response::download($file, $user->first_name . ".pdf",$headers);
+
+        }else{
+            return redirect('/company/applications');
+        }
+
+    });
+
     Route::post('/doAddJob', function(Request $request){
         $validatedData = $request->validate([
             'title' => 'required',
@@ -359,6 +375,10 @@ Route::prefix('company')->middleware('cekCompany')->group( function() {
     Route::get('/plan', function(Request $request){
         $jobs = Job::where('id', '=', $request->id1)->first();
         $jobs->Users()->updateExistingPivot($request->id2, ['status' => 1]);
+        $user = $jobs->Users()->first();
+        $company = $jobs->Company()->first();
+
+        Mail::to($user->email)->send(new InterviewMail($user, $jobs, $company));
         Session::flash('message', 'Successfully planned an interview!');
         return redirect('/company/applications');
     });
